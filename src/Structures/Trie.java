@@ -16,7 +16,7 @@ public class Trie {
 	public void setMarked(){
 		isMarked = true;
 	}
-	
+
 	public Trie addChar(char c){
 		if(edges[getIndex(c)] != null){
 			//do nothing, already created
@@ -29,7 +29,7 @@ public class Trie {
 	public boolean isMarked(){
 		return isMarked;
 	}
-	
+
 	public void drawTrie(NodeHandler nh){	
 		int[] depthArray;
 		ArrayList<DepthInfo> depth = this.getDepthList(1);
@@ -40,14 +40,14 @@ public class Trie {
 			if(depth.get(i).level > maxDepth)
 				maxDepth = depth.get(i).level;
 		}
-		
+
 		//create array with number of nodes per level
 		depthArray = new int[maxDepth];
 		for(int i = 0; i < depth.size(); i++){
 			DepthInfo di = depth.get(i);
 			depthArray[di.level - 1] += di.count;
 		}
-		
+
 		nh.setDepthInfo(depthArray, this);
 	}
 
@@ -62,22 +62,22 @@ public class Trie {
 		depth.add(new DepthInfo(level, 1));
 		return depth;
 	}
-	
+
 	private class DepthInfo{
 		int level;
 		int count;
-		
+
 		public DepthInfo(int l, int c){
 			level = l;
 			count = c;
 			//System.out.println(this.toString());
 		}
-		
+
 		public String toString(){
 			return "("+level+", "+count+")";
 		}
 	}
-	
+
 	public static void createExample(){
 		Trie root = new Trie();
 		String[] strings = {"barfoo", "foobar", "foo", "bar", "barfuss", "fool"};
@@ -89,10 +89,18 @@ public class Trie {
 			}
 			temp.setMarked();
 		}
-		
-		//Trie.printTrie(root);
 	}
 	
+	public void createTrieFromStrings(String[] strings){
+		for(int i = 0; i < strings.length; i++){
+			Trie temp = this;
+			for(int j = 0; j < strings[i].length(); j++){
+				temp = temp.addChar(strings[i].charAt(j));
+			}
+			temp.setMarked();
+		}
+	}
+
 	public Edge[] getEdges(){
 		return edges;
 	}
@@ -100,7 +108,7 @@ public class Trie {
 	private int getIndex(char c){
 		return ((int) c ) - 97;
 	}
-	
+
 	private static void printTrie(Trie t){
 		Stack<TrieString> stack = new Stack<TrieString>();
 		stack.push(new TrieString(t, ""));
@@ -120,39 +128,42 @@ public class Trie {
 			}
 		}
 	}
-	
+
 	private static class TrieString{
 		public String s;
 		public Trie t;
-		
+
 		public TrieString(Trie t, String s){
 			this.s = s;
 			this.t = t;
 		}
 	}
-	
-	public void paintNode(Graphics g, int level, int nrInLevel, int[] depthInfo, int height){
+
+	public void paintlvl(Graphics g, int oldx, int oldy, int rangex, int lvl, int[] depthInfo, int offsetY){
+		//draw node at old position
 		g.setColor(Color.gray);
 		if(this.isMarked)
 			g.setColor(Color.green);
-		g.drawRect(800/(depthInfo[level]+1) * nrInLevel, height * level, 16, 16);
-		
+		g.drawRect(oldx, oldy, 16, 16);
 		g.setColor(Color.gray);
-		int nr = 1;
-		for(int i = 0; i < getEdges().length; i++){
-			Edge e = getEdges()[i];
+
+		int nr = 0;
+		for(int i = 0; i < edges.length; i++){
+			Edge e = edges[i];
 			if(e != null){
-				String s = ""+e.getC();
-				if(level != depthInfo.length - 1 && s != null){
-					int ox = 800/(depthInfo[level]+1) * nrInLevel + 8;
-					int oy = height * level + 16;
-					int nx = 800/(depthInfo[level + 1]+1) * nr + 8;
-					int ny = height * (level + 1);
-					g.drawLine(ox, oy, nx, ny);
-					g.drawString(s, (ox + nx) / 2, (oy + ny) / 2);
+				int offsetX = rangex / (depthInfo[lvl] / 2 + 1);
+				int newx;
+				int newy = oldy + offsetY;
+				if(nr < depthInfo[lvl] / 2){
+					newx = oldx-rangex + offsetX * (nr + 1);
+				}else{
+					newx = oldx+ offsetX * (nr- (depthInfo[lvl] / 2) + 1);
 				}
-				e.getB().paintNode(g, level + 1, nr, depthInfo, height);
-				nr ++;
+				e.getB().paintlvl(g, newx, newy, offsetX, lvl + 1, depthInfo, offsetY);
+				g.drawLine(oldx + 8, oldy + 16, newx + 8, newy);
+				g.drawString(""+e.getC(), (oldx + newx)/2, (oldy + newy)/ 2);
+				
+				nr++;
 			}
 		}
 	}

@@ -12,7 +12,11 @@ public class Main {
 	 * Author: Thomas Schemmer
 	 * Example usage: 
 	 * - algorithms: LZ77.decompress(LZ77.compress(LZ77.STRINGA, 2, 2));
-	 * - Tries: Trie.createExample();
+	 * - Tries: 
+	 * 		- static: Trie.createExample();
+	 * 		- dynamic: Trie t = new Trie(); t.createTrieFromStrings(String[] s);
+	 * 		- print: Trie.printTrie(Trie t);
+	 * 		- paint: t.drawTrie(getNH());
 	 */
 	public static void main(String[] args) {
 		new Main();
@@ -24,16 +28,9 @@ public class Main {
 		nh = new NodeHandler(this);
 		
 		Trie root = new Trie();
-		String[] strings = {"barfoo", "foobar", "foo", "bar", "barfuss", "fool"};
+		String[] strings = {"barfoo", "foobar", "foo", "bar", "barfuss", "fool", "hallo"};
 
-		for(int i = 0; i < strings.length; i++){
-			Trie temp = root;
-			for(int j = 0; j < strings[i].length(); j++){
-				temp = temp.addChar(strings[i].charAt(j));
-			}
-			temp.setMarked();
-		}
-		
+		root.createTrieFromStrings(strings);
 		root.drawTrie(nh);
 	}
 	
