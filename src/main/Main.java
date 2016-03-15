@@ -1,5 +1,6 @@
 package main;
 
+import Algorithms.RadixSort;
 import Structures.NodeHandler;
 import Structures.Trie;
 
@@ -18,12 +19,14 @@ public class Main {
 	 * 		- print: Trie.printTrie(Trie t);
 	 * 		- paint: t.drawTrie(getNH());
 	 */
-	public static void main(String[] args) {
-		new Main();
-	}
 	
 	private NodeHandler nh;
 	public Main(){
+		//System.out.println(RadixSort.countingSort("uehfiuajsfjhbeoujbfiuzvaibouwjbraizfbksjfiazwkr", 26));
+		RadixSort.print(RadixSort.iterativeSort(new String[]{"which", "witch", "winds", "white", "wiser","water"}));
+	}
+	
+	public void testTrie(){
 		MyFrame frame = new MyFrame(this);
 		nh = new NodeHandler(this);
 		
@@ -32,9 +35,17 @@ public class Main {
 
 		root.createTrieFromStrings(strings);
 		root.drawTrie(nh);
+		
+		root.deleteTrie("fool", root);
+		
+		root.drawTrie(nh);
 	}
 	
 	public NodeHandler getNH(){
 		return nh;
+	}
+	
+	public static void main(String[] args) {
+		new Main();
 	}
 }

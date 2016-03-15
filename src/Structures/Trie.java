@@ -10,20 +10,42 @@ import main.MyScreen;
 public class Trie {
 	private boolean isMarked;
 	private Edge[] edges = new Edge[26];
+	private Trie parent;
 
 	public Trie(){}
 
 	public void setMarked(){
 		isMarked = true;
 	}
+	
+	private void setParent(Trie t){
+		this.parent = t;
+	}
+	
+	public Trie getRoot(){
+		if(this.parent == null)
+			return this;
+		return parent.getRoot();
+	}
+	
+	private boolean isLeaf(){
+		for(int i = 0; i < edges.length; i++){
+			if(edges[i] != null){
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public Trie addChar(char c){
-		if(edges[getIndex(c)] != null){
+		if(edges[Alphabet.getIndex(c)] != null){
 			//do nothing, already created
 		}else{
-			edges[getIndex(c)] = new Edge(this, new Trie(), c);
+			Trie b = new Trie();
+			b.setParent(this);
+			edges[Alphabet.getIndex(c)] = new Edge(this, b, c);
 		}
-		return edges[getIndex(c)].getB();
+		return edges[Alphabet.getIndex(c)].getB();
 	}
 
 	public boolean isMarked(){
@@ -105,10 +127,6 @@ public class Trie {
 		return edges;
 	}
 
-	private int getIndex(char c){
-		return ((int) c ) - 97;
-	}
-
 	private static void printTrie(Trie t){
 		Stack<TrieString> stack = new Stack<TrieString>();
 		stack.push(new TrieString(t, ""));
@@ -167,4 +185,31 @@ public class Trie {
 			}
 		}
 	}
+	
+	public boolean deleteTrie(String s, Trie t){
+		// search for a marked node that represents s
+		Trie r = t.getRoot();
+		for(int i = 0; i < s.length(); i++){
+			if(r == null) 
+				return false;
+			r = r.getEdges()[Alphabet.getIndex(s.charAt(i))].getB();
+		}
+		if(!r.isMarked) 
+			return true;
+		else{
+			r.isMarked = false;
+			while(r.isLeaf() && !r.isMarked){
+				Trie p = r.parent;
+				for(int i = 0; i < p.edges.length; i++){
+					if(p.edges[i] != null && p.edges[i].getB() == r){
+						edges[i] = null;
+					}
+				}
+				r = p;
+			}
+			return true;
+		}
+	}
+	
+	
 }
