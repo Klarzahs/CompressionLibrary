@@ -9,13 +9,19 @@ public class RadixSort {
 		int N = arr.length;
 		for(int d = arr[0].length - 1; d >= 0; d--){
 			int[] keys = new int[N];
-			for(int i = 0; i < N - 1; i++){
+			for(int i = 0; i < N; i++){
 				keys[i] = arr[i][d];
 			}
+			System.out.println("It "+d+", keys:");
+			printArr(keys);
 			int[] swap = countingSortSwap(keys, Alphabet.R);
+			printArr(swap);
+			int[][] tempArr = new int[arr.length][arr[0].length];
 			for(int i = 0; i < swap.length; i++){
-				swap(arr, i, swap[i]);
+				tempArr[i] = arr[swap[i]];
 			}
+			
+			arr = tempArr;
 		}
 		
 		return arrToString(arr);
@@ -60,7 +66,7 @@ public class RadixSort {
 		int[] cnt = new int[R + 1];
 		int[] swap = new int[a.length];
 		
-		for (int i = 0; i < a.length - 1; i++){
+		for (int i = 0; i < a.length ; i++){
 			cnt[a[i] + 1]++;
 		}
 
@@ -68,11 +74,11 @@ public class RadixSort {
 			cnt[r + 1] = cnt[r + 1] + cnt[r];
 		}
 
-		for (int i = 0; i < a.length - 1; i++){
+		for (int i = 0; i < a.length - 1; i++){	//-1
 			swap[cnt[a[i]]] = i;
 			cnt[a[i]]++;
 		}
-		
+		//swap[swap.length - 1] = swap.length - 1;
 		return swap;
 	}
 	
@@ -111,5 +117,12 @@ public class RadixSort {
 			ret += Alphabet.getChar(a[i]);
 		}
 		return ret;
+	}
+	
+	public static void printArr(int[] arr){
+		for(int i = 0; i < arr.length; i++){
+			System.out.print(arr[i]+", ");
+		}
+		System.out.println("");
 	}
 }

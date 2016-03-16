@@ -27,4 +27,8 @@ public class MyFrame extends JFrame{
 	public MyScreen getScreen(){
 		return this.screen;
 	}
+	
+	public void repaint(){
+		screen.repaint();
+	}
 }

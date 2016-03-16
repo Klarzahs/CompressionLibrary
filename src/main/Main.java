@@ -1,6 +1,8 @@
 package main;
 
-import Algorithms.RadixSort;
+import java.io.File;
+
+import Algorithms.LZ78;
 import Structures.NodeHandler;
 import Structures.Trie;
 
@@ -12,7 +14,10 @@ public class Main {
 	 * at the RWTH Aachen
 	 * Author: Thomas Schemmer
 	 * Example usage: 
-	 * - algorithms: LZ77.decompress(LZ77.compress(LZ77.STRINGA, 2, 2));
+	 * - algorithms: 
+	 * 		- LZ77.decompress(LZ77.compress(LZ77.STRINGA, 2, 2));
+	 * 		- CountingSort: RadixSort.countingSort(String, 26)
+	 * 		- it. Radix sort: RadixSort.iterativeSort(new String[]{"which", "witch", "winds", "white", "wiser","water"})		bugged
 	 * - Tries: 
 	 * 		- static: Trie.createExample();
 	 * 		- dynamic: Trie t = new Trie(); t.createTrieFromStrings(String[] s);
@@ -22,8 +27,7 @@ public class Main {
 	
 	private NodeHandler nh;
 	public Main(){
-		//System.out.println(RadixSort.countingSort("uehfiuajsfjhbeoujbfiuzvaibouwjbraizfbksjfiazwkr", 26));
-		RadixSort.print(RadixSort.iterativeSort(new String[]{"which", "witch", "winds", "white", "wiser","water"}));
+		LZ78.decompress(LZ78.compress(new File("C:/Users/Thomas/workspace/LZ77/src/testfiles/lorem.txt")));
 	}
 	
 	public void testTrie(){
@@ -39,6 +43,8 @@ public class Main {
 		root.deleteTrie("fool", root);
 		
 		root.drawTrie(nh);
+		
+		frame.repaint();
 	}
 	
 	public NodeHandler getNH(){

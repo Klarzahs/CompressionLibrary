@@ -1,5 +1,10 @@
 package Algorithms;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class LZ78 {
@@ -8,6 +13,38 @@ public class LZ78 {
 
 	public static final String STRINGA = "ANNASNASSEANANAS";			// test strings
 	public static final String STRINGB = "BADADADABAAB";
+	
+	private static final boolean DEBUG = true;
+	
+	public static ArrayList<DEntry> compress(File f){
+		String s = "";
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(f.getAbsolutePath()));
+			String newline;
+			while((newline = br.readLine()) != null){
+				s = new StringBuilder().append(s).append("\n").append(newline).toString();
+			}
+			System.out.println("Compressing..");
+			
+			if(DEBUG){
+				Long before = System.currentTimeMillis();
+				ArrayList<DEntry> list = LZ78.compress(s);
+				Long after = System.currentTimeMillis();
+				System.out.println("DEBUG INFO: size "+list.size()+"\nTime to compress: "+(after-before)/1000+"s");
+				return list;
+			}else
+				return LZ78.compress(s);
+				
+		} catch (FileNotFoundException e) {
+			System.out.println("Couldn't find file "+f.getAbsolutePath());
+		} catch (IOException e) {
+			System.out.println("Failed to read line from "+f.getAbsolutePath());
+		}
+		return null;
+	}
+	
+	public void test(){
+	}
 	
 	public static ArrayList<DEntry> compress(String s){
 		chars = new char[s.length()];
@@ -27,6 +64,7 @@ public class LZ78 {
 				entries.add(new DEntry(entries.indexOf(e), chars[i + getChars(e).length]));
 				i += getChars(e).length + 1;
 			}
+			System.out.print(" "+entries.size());
 		}
 		
 		return entries;
@@ -114,7 +152,6 @@ public class LZ78 {
 		public DEntry(int r, char c){
 			this.r  = r;
 			this.c = c;
-			System.out.println(toString());
 		}
 		
 		@Override
